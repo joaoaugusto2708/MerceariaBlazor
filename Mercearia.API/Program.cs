@@ -8,6 +8,7 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder.WithOrigins("http://localhost:5285")
+                   .AllowAnyOrigin()
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });

@@ -1,11 +1,10 @@
-using Mercearia.Front.Client.Pages;
-using Mercearia.Front.Components;
+using Mercadoria.UI.Client.Pages;
+using Mercadoria.UI.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
 var app = builder.Build();
@@ -28,8 +27,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Mercearia.Front.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(Mercadoria.UI.Client._Imports).Assembly);
 
 app.Run();
