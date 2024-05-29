@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Mercadoria.UI.Client.Helpers
+namespace Mercearia.UI.Client.Helpers
 {
     public class Api
     {

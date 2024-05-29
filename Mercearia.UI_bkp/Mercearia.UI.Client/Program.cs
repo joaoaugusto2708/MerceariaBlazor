@@ -1,4 +1,4 @@
-using Mercadoria.UI.Client.Helpers;
+using Mercearia.UI.Client.Helpers;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

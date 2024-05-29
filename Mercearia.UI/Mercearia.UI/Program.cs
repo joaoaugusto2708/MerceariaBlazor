@@ -1,5 +1,5 @@
-using Mercadoria.UI.Client.Pages;
-using Mercadoria.UI.Components;
+using Mercearia.UI.Client.Pages;
+using Mercearia.UI.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +28,6 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Mercadoria.UI.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(Mercearia.UI.Client._Imports).Assembly);
 
 app.Run();
