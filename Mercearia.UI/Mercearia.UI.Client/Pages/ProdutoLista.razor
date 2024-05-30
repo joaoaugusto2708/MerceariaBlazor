@@ -1,37 +1,57 @@
 ﻿@page "/produtoLista"
+@using Mercearia.UI.Client.Models
+@using Mercearia.UI.Client.Helpers
+@using System.Net.Http
+@using System.Text.Json
+@inject Api api
 <PageTitle>Lista de Produtos</PageTitle>
 
-<Table>
-    <TableHeader>
-        <TableRow>
-            <TableHeaderCell>#</TableHeaderCell>
-            <TableHeaderCell>First Name</TableHeaderCell>
-            <TableHeaderCell>Last Name</TableHeaderCell>
-            <TableHeaderCell>Username</TableHeaderCell>
-        </TableRow>
-    </TableHeader>
-    <TableBody>
-        <TableRow>
-            <TableRowHeader>1</TableRowHeader>
-            <TableRowCell>Mark</TableRowCell>
-            <TableRowCell>Otto</TableRowCell>
-            <TableRowCell>@@mdo</TableRowCell>
-        </TableRow>
-        <TableRow>
-            <TableRowHeader>2</TableRowHeader>
-            <TableRowCell>Jacob</TableRowCell>
-            <TableRowCell>Thornton</TableRowCell>
-            <TableRowCell>@@fat</TableRowCell>
-        </TableRow>
-        <TableRow>
-            <TableRowHeader>3</TableRowHeader>
-            <TableRowCell>Larry</TableRowCell>
-            <TableRowCell>the Bird</TableRowCell>
-            <TableRowCell>@@twitter</TableRowCell>
-        </TableRow>
-    </TableBody>
-</Table>
+@if (Produtos == null)
+{
+    <div class="d-flex justify-content-center">
+        <strong role="status">Loading...</strong>
+        <Spinner Type="SpinnerType.Border" Class="ms-auto" />
+    </div>
+}
+else
+{
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>#</TableHeaderCell>
+                <TableHeaderCell>Nome</TableHeaderCell>
+                <TableHeaderCell>Preço</TableHeaderCell>
+                <TableHeaderCell>Quantidade</TableHeaderCell>
+                <TableHeaderCell>Disponivel</TableHeaderCell>
+                <TableHeaderCell>Tipo de Produto</TableHeaderCell>
+                <TableHeaderCell>Validade</TableHeaderCell>
+                <TableHeaderCell>Descrição</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach(var produto in Produtos)
+            {
+                <TableRow>
+                    <TableRowHeader>@produto.NumProduto</TableRowHeader>
+                    <TableRowCell>@produto.Nome</TableRowCell>
+                    <TableRowCell>@produto.Preco</TableRowCell>
+                    <TableRowCell>@produto.Quantidade</TableRowCell>
+                    <TableRowCell>@produto.Disponivel</TableRowCell>
+                    <TableRowCell>@produto.TipoProduto</TableRowCell>
+                    <TableRowCell>@produto.Validade</TableRowCell>
+                    <TableRowCell>@produto.Descricao</TableRowCell>
+                </TableRow>
+            }
+
+        </TableBody>
+    </Table>
+}
+
 
 @code {
-   
+    private IList<Produto>? Produtos { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Produtos = await api.GetAsync<Produto>("/api/Produto");
+    }
 }
