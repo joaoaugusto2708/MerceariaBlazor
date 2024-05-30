@@ -1,169 +1,94 @@
-﻿using Mercearia.API.DTO;
-using Mercearia.Model.Model;
-using Mercearia.Infra;
+﻿using Mercearia.Infra;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Mercearia.Model;
+using Mercearia.Infra.DAOs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Mercearia.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
-        // GET: api/<ProdutoController>
+        public ProdutoController()
+        {
+            dao = new ProdutoDAO();
+        }
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get()
+        public async Task<ActionResult<IEnumerable<Produto>>> GetAsync()
         {
-            var produtos = new ProdutoDAO().BuscarTodos();
+            var objetos = await dao.ReadAll();
 
-            if (produtos != null)
-            {
-                var produtosDTO = produtos.Select(p => new ProdutoDTO
-                {
-                    NumProduto = p.NumProduto,
-                    Preco = p.Preco,
-                    Quantidade = p.Quantidade,
-                    Disponivel = p.Disponivel,
-                    TipoProduto = p.TipoProduto,
-                    Validade = p.Validade,
-                    Descricao = p.Descricao,
-                    Nome = p.Nome
-                });
+            if (objetos == null)
+                return NotFound();
 
-                return Ok(produtosDTO);
-            }
-            else
-            {
-                return BadRequest();
-            }
+            return Ok(objetos);
         }
 
-
-        // GET api/<ProdutoController>/5
-        [HttpGet("{numProduto}")]
-        public ActionResult<ProdutoDTO> Get(string numProduto)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Produto>> GetId(string id)
         {
-            Produto produto = new ProdutoDAO().Buscar(numProduto);
 
-            if (produto != null)
-            {
-                var produtoDTO = new ProdutoDTO
-                {
-                    NumProduto = produto.NumProduto,
-                    Preco = produto.Preco,
-                    Quantidade = produto.Quantidade,
-                    Disponivel = produto.Disponivel,
-                    TipoProduto = produto.TipoProduto,
-                    Validade = produto.Validade,
-                    Descricao = produto.Descricao,
-                    Nome = produto.Nome
-                };
+            var obj = await dao.Read(id);
 
-                return Ok(produtoDTO);
-            }
+            if (obj == null)
+                return NotFound();
 
-            return NotFound();
+            return obj;
         }
 
-
-        // POST api/<ProdutoController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ProdutoDTO produtoDTO)
+        public async Task<ActionResult<Produto>> PostAsync([FromBody]Produto obj)
         {
-            try
-            {
-                if (produtoDTO != null)
-                {
-                    Random random = new Random();
-                    Produto produto = new Produto
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        NumProduto = random.Next(10000000, 99999999).ToString("D8"),
-                        Preco = produtoDTO.Preco,
-                        Quantidade = produtoDTO.Quantidade,
-                        Disponivel = produtoDTO.Disponivel,
-                        TipoProduto = produtoDTO.TipoProduto == null ? "Indefinido" : produtoDTO.TipoProduto,
-                        Validade = produtoDTO.Validade,
-                        Descricao = produtoDTO.Descricao,
-                        Nome = produtoDTO.Nome
-                    };
-                    new ProdutoDAO().Inserir(produto);
-                    return Ok("Produto Salvo");
+            await dao.InsertAsync(obj);
 
-                }
-                else
-                { 
-                    return BadRequest("Falta Informação");
-                }
-
-                }catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
+            return CreatedAtAction(
+                nameof(GetId),
+                new { id = obj.Id },
+                obj
+            );
         }
 
-        // PUT api/<ProdutoController>/5
-        [HttpPut("{numProduto}")]
-        public async Task<ActionResult> Put(string numProduto, [FromBody] ProdutoDTO produtoDTO)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAsync(string id, [FromBody]Produto obj)
         {
-            try
-            {
-                if (produtoDTO != null)
-                {
-                    Produto produto  = new ProdutoDAO().Buscar(numProduto);
-                    if (produto != null)
-                    {
-                        produto.Preco = produtoDTO.Preco;
-                        produto.Quantidade = produtoDTO.Quantidade;
-                        produto.Disponivel = produtoDTO.Disponivel;
-                        produto.TipoProduto = produtoDTO.TipoProduto;
-                        produto.Validade = produtoDTO.Validade;
-                        produto.Descricao = produtoDTO.Descricao;
-                        produto.Nome = produtoDTO.Nome;
-                        new ProdutoDAO().Atualizar(produto);
-                        return Ok("Produto Alterado");
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
-                }
-                else
-                {
-                    return BadRequest("O objeto ProdutoDTO recebido é nulo.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            if (id != obj.Id)
+                return BadRequest();
+
+            Produto produto = await dao.Read(id);
+
+            if (produto == null)
+                return NotFound();
+
+            produto.TipoProduto = obj.TipoProduto;
+            produto.Disponivel = obj.Disponivel;
+            produto.Quantidade = obj.Quantidade;
+            produto.Descricao = obj.Descricao;
+            produto.Nome = obj.Nome;
+            produto.Preco = obj.Preco;
+            produto.Validade = obj.Validade;
+
+            await dao.UpdateAsync(produto);
+
+            return NoContent();
         }
 
-
-        // DELETE api/<ProdutoController>/5
-        [HttpDelete("{numProduto}")]
-        public async Task<ActionResult> Delete(string numProduto)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
         {
-            try
-            {
-                Produto produto = new ProdutoDAO().Buscar(numProduto);
-                if (produto != null)
-                {
-                    new ProdutoDAO().Deletar(produto);
-                    return NoContent();
-                }
-                else
-                {
-                    return NotFound("Não existe este produto");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var obj = await dao.Read(id);
+
+            if (obj == null)
+                return NotFound();
+
+            await dao.DeleteAsync(id);
+
+            return NoContent();
         }
+
+        private readonly ProdutoDAO dao;
     }
 }

@@ -1,10 +1,6 @@
-﻿using Mercearia.API.DTO;
-using Mercearia.Model.Model;
-using Mercearia.Infra;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Mercearia.Model.DTO;
-using Mercearia.API.Service;
+﻿using Microsoft.AspNetCore.Mvc;
+using Mercearia.Model;
+using Mercearia.Infra.DAOs;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,160 +11,79 @@ namespace Mercearia.API.Controllers
     public class VendaController : ControllerBase
     {
         // GET: api/<ProdutoController>
+        public VendaController()
+        {
+            dao = new VendaDAO();
+        }
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VendaDTO>>> Get()
+        public async Task<ActionResult<IEnumerable<Venda>>> GetAsync()
         {
-            var vendas = new VendaDAO().BuscarTodos();
+            var objetos = await dao.ReadAllWithProdutosAsync();
 
-            if (vendas != null)
-            {
-                var vendasDTO = vendas.Select(p => new VendaDTO
-                {
-                   DiaVenda = p.DiaVenda,
-                   FormaPagamento = p.FormaPagamento,
-                   NumVenda = p.NumVenda,
-                   Produtos = p.Produtos,
-                   ValorVenda = p.ValorVenda
-                });
+            if (objetos == null)
+                return NotFound();
 
-                return Ok(vendasDTO);
-            }
-            else
-            {
-                return BadRequest();
-            }
+            return Ok(objetos);
         }
 
-
-        // GET api/<ProdutoController>/5
-        [HttpGet("{numVenda}")]
-        public ActionResult<ProdutoDTO> Get(string numVenda)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Venda>> GetId(string id)
         {
-            Venda venda = new VendaDAO().Buscar(numVenda);
 
-            if (venda != null)
-            {
-                var vendaDTO = new VendaDTO
-                {
-                    DiaVenda = venda.DiaVenda,
-                    ValorVenda = venda.ValorVenda,
-                    FormaPagamento = venda.FormaPagamento,
-                    NumVenda = venda.NumVenda,
-                    Produtos = venda.Produtos
-                };
+            var obj = await dao.ReadWithProdutosAsync(id);
 
-                return Ok(vendaDTO);
-            }
+            if (obj == null)
+                return NotFound();
 
-            return NotFound();
+            return obj;
         }
 
-
-        // POST api/<ProdutoController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] VendaDTO vendaDTO)
+        public async Task<ActionResult<Venda>> PostAsync([FromBody] Venda obj)
         {
-            try
-            {
-                List<Produto> produtos =  new List<Produto>();
-                foreach (var produto in vendaDTO.Produtos)
-                {
-                    try
-                    {
-                        produtos.Add(new ProdutoDAO().Buscar(produto.NumProduto));
-                    }
-                    catch (Exception)
-                    {
-
-                        NotFound("Produto inexistente, Numero do produto: " + produto.NumProduto );
-                    }
-                    
-                }
-                if (vendaDTO != null)
-                {
-                    Random random = new Random();
-                    Venda venda = new Venda
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        NumVenda = random.Next(10000000, 99999999).ToString("D8"),
-                        DiaVenda = vendaDTO.DiaVenda,
-                        FormaPagamento = vendaDTO.FormaPagamento,
-                        Produtos = produtos,                 
-                        ValorVenda = vendaDTO.ValorVenda
-                    };
-                    
-
-                    return new VendaService().RealizarVenda(venda) ? Ok(venda) : BadRequest("Produtos indisponiveis");
-
-                }
-                else
-                { 
-                    return BadRequest("Falta Informação");
-                }
-
-                }catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
+            await dao.InsertAsync(obj);
+            return CreatedAtAction(
+                nameof(GetId),
+                new { id = obj.Id },
+                obj
+            );
         }
 
-        // PUT api/<ProdutoController>/5
-        [HttpPut("{numVenda}")]
-        public async Task<ActionResult> Put(string numVenda, [FromBody] VendaDTO vendaDTO)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAsync(string id, [FromBody] Venda obj)
         {
-            try
-            {
-                if (vendaDTO != null)
-                {
-                    Venda venda  = new VendaDAO().Buscar(numVenda);
-                    if (venda != null)
-                    {
-                        venda.DiaVenda = vendaDTO.DiaVenda;
-                        venda.ValorVenda = vendaDTO.ValorVenda;
-                        venda.FormaPagamento = vendaDTO.FormaPagamento;
-                        venda.Produtos = vendaDTO.Produtos;
-                        new VendaDAO().Atualizar(venda);
-                        return Ok("Produto Alterado");
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
-                }
-                else
-                {
-                    return BadRequest("O objeto ProdutoDTO recebido é nulo.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            if (id != obj.Id)
+                return BadRequest();
+
+            Venda venda = await dao.Read(id);
+
+            if (venda == null)
+                return NotFound();
+
+            venda.DiaVenda = obj.DiaVenda;
+            venda.ValorVenda = obj.ValorVenda;
+            venda.FormaPagamento = obj.FormaPagamento;
+            venda.Produtos = obj.Produtos;
+
+            await dao.UpdateAsync(venda);
+
+            return NoContent();
         }
 
-
-        // DELETE api/<ProdutoController>/5
-        [HttpDelete("{numVenda}")]
-        public async Task<ActionResult> Delete(string numVenda) 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(string id)
         {
-            try
-            {
-                Venda venda = new VendaDAO().Buscar(numVenda);
-                if (venda != null)
-                {
-                    new VendaDAO().Deletar(venda);
-                    return NoContent();
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var obj = await dao.Read(id);
+
+            if (obj == null)
+                return NotFound();
+
+            await dao.DeleteAsync(id);
+
+            return NoContent();
         }
+
+        private readonly VendaDAO dao;
     }
 }
