@@ -1,0 +1,84 @@
+﻿@page "/dashboard"
+@using Mercearia.UI.Client.Models
+@using Mercearia.UI.Client.Helpers
+@using System.Net.Http
+@using System.Text.Json
+@inject Api api
+
+
+<Chart @ref="barChart" Type="ChartType.Bar" TItem="double" Clicked="@OnClicked" />
+@code {
+    Chart<double> barChart;
+
+    private IList<Venda>? Vendas { get; set; }
+
+    string[] RecuperarDatas()
+    {
+        string[] dados = new string[Vendas.Count()];
+        int i = 0;
+        var aux = new DateTime();
+        foreach (var venda in Vendas)
+        {
+            if (venda.DiaVenda.Date != aux)
+            {
+                dados[i] = venda.DiaVenda.Date.ToString();
+            }
+            aux = venda.DiaVenda.Date;
+            i++;
+        }
+        return dados;
+
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Vendas = await api.GetAsync<Venda>("/api/Venda");
+            await HandleRedraw();
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        await barChart.Clear();
+
+        await barChart.AddLabelsDatasetsAndUpdate(RecuperarDatas(), GetBarChartDataset());
+    }
+
+    private BarChartDataset<Double> GetBarChartDataset()
+    {
+        return new()
+            {
+                Label = "Historico de vendas",
+                Data = BuscarValores(),
+                BackgroundColor = backgroundColors,
+                BorderColor = borderColors,
+                BorderWidth = 1
+            };
+    }
+
+
+
+    List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
+    List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
+
+    List<double> BuscarValores()
+    {
+        List<double> valores = new List<double>();
+        foreach (var venda in Vendas)
+        {
+            valores.Add(Decimal.ToDouble(venda.ValorVenda));
+        }
+
+        return valores;
+    }
+
+    Task OnClicked(ChartMouseEventArgs e)
+    {
+        var model = e.Model as BarChartModel;
+
+        Console.WriteLine($"Handling event for {nameof(BarChartModel)}: x:{model.X} y:{model.Y}");
+        return Task.CompletedTask;
+    }
+    
+}

@@ -20,7 +20,7 @@ namespace Mercearia.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Produto>>> GetAsync()
         {
-            var objetos = await dao.ReadAll();
+            var objetos = await dao.ReadAllAsync();
 
             if (objetos == null)
                 return NotFound();
@@ -32,7 +32,7 @@ namespace Mercearia.API.Controllers
         public async Task<ActionResult<Produto>> GetId(string id)
         {
 
-            var obj = await dao.Read(id);
+            var obj = await dao.ReadAsync(id);
 
             if (obj == null)
                 return NotFound();
@@ -58,7 +58,7 @@ namespace Mercearia.API.Controllers
             if (id != obj.Id)
                 return BadRequest();
 
-            Produto produto = await dao.Read(id);
+            Produto produto = await dao.ReadAsync(id);
 
             if (produto == null)
                 return NotFound();
@@ -79,7 +79,7 @@ namespace Mercearia.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
-            var obj = await dao.Read(id);
+            var obj = await dao.ReadAsync(id);
 
             if (obj == null)
                 return NotFound();

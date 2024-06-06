@@ -1,0 +1,52 @@
+﻿@page "/vendas"
+@using Mercearia.UI.Client.Models
+@using Mercearia.UI.Client.Helpers
+@using System.Net.Http
+@using System.Text.Json
+@inject Api api
+<PageTitle>Lista de Vendas</PageTitle>
+
+@if (Vendas == null)
+{
+    <div class="d-flex justify-content-center">
+        <strong role="status">Loading...</strong>
+        <Spinner Type="SpinnerType.Border" Class="ms-auto" />
+    </div>
+}
+else
+{
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>#</TableHeaderCell>
+                <TableHeaderCell>Forma de Pagamento</TableHeaderCell>
+                <TableHeaderCell>Valor da Venda</TableHeaderCell>
+                <TableHeaderCell>Produtos da venda</TableHeaderCell>
+                <TableHeaderCell>Ver Produtos</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var venda in Vendas)
+            {
+                <TableRow>
+                    <TableRowHeader>@venda.NumVenda</TableRowHeader>
+                    <TableRowCell>@venda.FormaPagamento</TableRowCell>
+                    <TableRowCell>@venda.ValorVenda</TableRowCell>
+                    <TableRowCell>@venda.Produtos.Count()</TableRowCell>
+                    <TableRowCell><Modal></Modal></TableRowCell>
+                    
+                </TableRow>
+            }
+
+        </TableBody>
+    </Table>
+}
+
+
+@code {
+    private IList<Venda>? Vendas { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Vendas = await api.GetAsync<Venda>("/api/Venda");
+    }
+}

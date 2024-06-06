@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mercearia.Model;
 using Mercearia.Infra.DAOs;
+using Mercearia.API.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -42,12 +43,13 @@ namespace Mercearia.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Venda>> PostAsync([FromBody] Venda obj)
         {
-            await dao.InsertAsync(obj);
-            return CreatedAtAction(
+            bool validaVenda = new VendaService().RealizarVenda(obj);
+            return validaVenda ? 
+                CreatedAtAction(
                 nameof(GetId),
                 new { id = obj.Id },
                 obj
-            );
+            )  : BadRequest("Produtos indisponiveis");
         }
 
         [HttpPut("{id}")]
@@ -56,7 +58,7 @@ namespace Mercearia.API.Controllers
             if (id != obj.Id)
                 return BadRequest();
 
-            Venda venda = await dao.Read(id);
+            Venda venda = await dao.ReadAsync(id);
 
             if (venda == null)
                 return NotFound();
@@ -74,7 +76,7 @@ namespace Mercearia.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
-            var obj = await dao.Read(id);
+            var obj = await dao.ReadAsync(id);
 
             if (obj == null)
                 return NotFound();

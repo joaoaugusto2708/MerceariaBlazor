@@ -25,7 +25,7 @@ namespace Mercearia.UI.Client.Helpers
             return JsonSerializer.Deserialize<IList<T>>(responseBody, options) ?? new List<T>();
         }
 
-        public async Task<T?> GetTAsync<T>(string url, string id) where T : new()
+        public async Task<T?> GetIdAsync<T>(string url, string id) where T : new()
         {
             using HttpResponseMessage response = await httpClient.GetAsync($"{url}/{id}");
             response.EnsureSuccessStatusCode();

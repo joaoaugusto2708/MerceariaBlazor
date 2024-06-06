@@ -31,7 +31,7 @@ namespace Mercearia.Infra.DAO
             }
         }
 
-        public async Task<IList<T>> ReadAll()
+        public async Task<IList<T>> ReadAllAsync()
         {
             using (var conexao = new MySqlConnection(GetStringConnection()))
             {
@@ -41,7 +41,7 @@ namespace Mercearia.Infra.DAO
                 return objetos.ToList();
             }
         }
-        public async Task<T> Read(string id)
+        public async Task<T> ReadAsync(string id)
         {
             using (var conexao = new MySqlConnection(GetStringConnection()))
             {
