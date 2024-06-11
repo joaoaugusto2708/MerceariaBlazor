@@ -2,37 +2,68 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="page-content">
+    <h1 class="center-text title-color">Mercearia Cinco Irmãos</h1>
 
-<CardDeck>
-    <Card>
-        <CardImage Source="/img/gallery/2.jpg" Alt="Card image cap 3"></CardImage>
-        <CardBody>
-            <CardTitle Size="5">Card title 1</CardTitle>
-            <CardText>
-                This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
-            </CardText>
-            <Button Color="Color.Primary">Button</Button>
-        </CardBody>
-    </Card>
-    <Card>
-        <CardImage Source="/img/gallery/3.jpg" Alt="Card image cap 9"></CardImage>
-        <CardBody>
-            <CardTitle Size="5">Card title 2</CardTitle>
-            <CardText>
-                This card has supporting text below as a natural lead-in to additional content.
-            </CardText>
-            <Button Color="Color.Primary">Button</Button>
-        </CardBody>
-    </Card>
-    <Card>
-        <CardImage Source="/img/gallery/4.jpg" Alt="Card image cap 12"></CardImage>
-        <CardBody>
-            <CardTitle Size="5">Card title 3</CardTitle>
-            <CardText>
-                This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.
-            </CardText>
-            <Button Color="Color.Primary">Button</Button>
-        </CardBody>
-    </Card>
-</CardDeck>
+    <p class="justify-text margin-top margin-bottom">
+        Bem-vindo à Mercearia Cinco Irmãos, onde você encontra tudo o que precisa para o seu dia a dia com qualidade e conveniência. Nossa missão é oferecer a melhor seleção de produtos para sua casa, promoções imperdíveis diariamente e um serviço de Clique e Retire para facilitar ainda mais suas compras. Explore nossas ofertas e descubra como podemos tornar suas compras mais práticas e econômicas.
+    </p>
+
+    <CardDeck>
+        <Card>
+            <CardImage Source="/images/careco.jpg" Alt="Card image cap 3"></CardImage>
+            <CardBody>
+                <CardTitle Size="5" TextAlignment="TextAlignment.Center">Feito para sua casa</CardTitle>
+                <CardText TextAlignment="TextAlignment.Center">
+                    Nós entendemos que sua casa é seu refúgio. Por isso, selecionamos os melhores produtos para garantir que você tenha sempre o que precisa com a qualidade que merece. Descubra nossa variedade de itens que são perfeitos para o seu lar, desde alimentos frescos até produtos de limpeza e utilidades domésticas.
+                </CardText>
+            </CardBody>
+        </Card>
+        <Card>
+            <CardImage Source="/images/promocao.jpeg" Alt="Card image cap 9"></CardImage>
+            <CardBody>
+                <CardTitle Size="5" TextAlignment="TextAlignment.Center">Promoções para você</CardTitle>
+                <CardText TextAlignment="TextAlignment.Center">
+                    Economize todos os dias com nossas ofertas exclusivas! Aqui na nossa mercearia, temos promoções diárias que são imperdíveis. Aproveite descontos especiais em produtos selecionados e leve mais por menos. Não perca, confira a promoção de hoje e encha seu carrinho com qualidade e economia.
+                </CardText>
+            </CardBody>
+        </Card>
+        <Card>
+            <CardImage Source="/images/clique.jpg" Alt="Card image cap 12"></CardImage>
+            <CardBody>
+                <CardTitle Size="5" TextAlignment="TextAlignment.Center">Clique e Retire</CardTitle>
+                <CardText TextAlignment="TextAlignment.Center">
+                    Sua conveniência é nossa prioridade! Com o nosso serviço Clique e Retire, você faz suas compras online e retira na loja no horário que for melhor para você. Sem filas, sem esperas, e com a mesma qualidade de sempre. Experimente a facilidade de comprar no conforto da sua casa e retirar quando quiser.
+                </CardText>
+            </CardBody>
+        </Card>
+    </CardDeck>
+</div>
+
+
+<style>
+    .center-text {
+        text-align: center;
+    }
+
+    .justify-text {
+        text-align: justify;
+    }
+
+    .margin-top {
+        margin-top: 40px;
+    }
+
+    .margin-bottom {
+        margin-bottom: 40px;
+    }
+
+    .page-content {
+        padding: 30px;
+    }
+
+    .title-color {
+        color: #380849;
+    }
+
+</style>
