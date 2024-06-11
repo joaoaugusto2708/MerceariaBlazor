@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Mercearia.Infra.DAO
 {
@@ -47,7 +49,7 @@ namespace Mercearia.Infra.DAO
             {
                 conexao.Open();
                 string sql = $"SELECT * FROM {NomeTabela} WHERE Id = @Id";
-                var obj = await conexao.QuerySingleAsync<T>(sql, new { Id = id});
+                var obj = await conexao.QuerySingleAsync<T>(sql, new { Id = id });
                 return obj;
             }
         }
@@ -65,11 +67,11 @@ namespace Mercearia.Infra.DAO
         }
         public async Task DeleteAsync(string id)
         {
-            using (var conexao = new MySqlConnection(GetStringConnection())) 
+            using (var conexao = new MySqlConnection(GetStringConnection()))
             {
                 conexao.Open();
                 string sql = @$"DELETE FROM {NomeTabela} WHERE Id = @Id";
-                await conexao.ExecuteAsync(sql, new { Id = id});
+                await conexao.ExecuteAsync(sql, new { Id = id });
             }
         }
 
@@ -83,8 +85,8 @@ namespace Mercearia.Infra.DAO
             return sb.ToString().Substring(1);
         }
 
-        private string GetUpdate() 
-        { 
+        private string GetUpdate()
+        {
             var sb = new StringBuilder();
             foreach (var m in Mapas)
             {
@@ -93,7 +95,7 @@ namespace Mercearia.Infra.DAO
             return sb.ToString().Substring(1);
         }
 
-        private string GetInsertNomes() 
+        private string GetInsertNomes()
         {
             var sb = new StringBuilder();
             foreach (var m in Mapas)
@@ -104,3 +106,4 @@ namespace Mercearia.Infra.DAO
         }
     }
 }
+
