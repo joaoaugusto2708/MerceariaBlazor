@@ -43,6 +43,7 @@ namespace Mercearia.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Produto>> PostAsync([FromBody]Produto obj)
         {
+            obj.NumProduto = "PD" + new Random().Next(100000, 999999);
             await dao.InsertAsync(obj);
 
             return CreatedAtAction(

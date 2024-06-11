@@ -6,7 +6,7 @@
 @inject Api api
 <PageTitle>Lista de Vendas</PageTitle>
 
-@if (Vendas == null)
+@if (vendas == null)
 {
     <div class="d-flex justify-content-center">
         <strong role="status">Loading...</strong>
@@ -26,7 +26,7 @@ else
             </TableRow>
         </TableHeader>
         <TableBody>
-            @foreach (var venda in Vendas)
+            @foreach (var venda in vendas)
             {
                 <TableRow>
                     <TableRowHeader>@venda.NumVenda</TableRowHeader>
@@ -44,9 +44,9 @@ else
 
 
 @code {
-    private IList<Venda>? Vendas { get; set; }
+    private IList<Venda>? vendas { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Vendas = await api.GetAsync<Venda>("/api/Venda");
+        vendas = await api.GetAsync<Venda>("/api/Venda");
     }
 }
