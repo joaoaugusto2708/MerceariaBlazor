@@ -5,9 +5,9 @@
 @using System.Text.Json
 @inject Api api
 
-<h1 style="text-align: center; color: #380849;">Dashboard de vendas</h1>
+<h1 style="text-align: center; color: #380849; margin-bottom: 40px;">Dashboard de vendas</h1>
 
-<p>Este dashboard tem como objetivo realizar análises de vendas por dia. Ao visualizar o histórico de vendas ao longo do tempo, podemos analisar os lucros obtidos em cada dia específico. Essa análise nos permite identificar tendências e padrões de vendas, além de nos ajudar a entender o desempenho do nosso negócio em diferentes períodos. Com essas informações em mãos, podemos desenvolver e implementar estratégias para alavancar nossos resultados, caso necessário, e otimizar ainda mais nossas operações.</p>
+<p style="margin-bottom: 40px;">Este dashboard tem como objetivo realizar análises de vendas por dia. Ao visualizar o histórico de vendas ao longo do tempo, podemos analisar os lucros obtidos em cada dia específico. Essa análise nos permite identificar tendências e padrões de vendas, além de nos ajudar a entender o desempenho do nosso negócio em diferentes períodos. Com essas informações em mãos, podemos desenvolver e implementar estratégias para alavancar nossos resultados, caso necessário, e otimizar ainda mais nossas operações.</p>
 
 
 <Chart @ref="barChart" Type="ChartType.Bar" TItem="double" Clicked="@OnClicked" />
@@ -53,11 +53,8 @@
     {
         return new()
             {
-                Label = "", // Remover a legenda
                 Data = BuscarValores(),
                 BackgroundColor = backgroundColors,
-                BorderColor = borderColors,
-                BorderWidth = 1
             };
     }
 
