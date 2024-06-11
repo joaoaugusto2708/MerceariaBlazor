@@ -1,4 +1,4 @@
-﻿@page "/produtoLista"
+﻿@page "/produto"
 @using Mercearia.UI.Client.Models
 @using Mercearia.UI.Client.Helpers
 @using System.Net.Http
@@ -6,7 +6,8 @@
 @inject Api api
 <PageTitle>Lista de Produtos</PageTitle>
 
-@if (Produtos == null)
+
+@if (produtos == null)
 {
     <div class="d-flex justify-content-center">
         <strong role="status">Loading...</strong>
@@ -29,7 +30,7 @@ else
             </TableRow>
         </TableHeader>
         <TableBody>
-            @foreach(var produto in Produtos)
+            @foreach(var produto in produtos)
             {
                 <TableRow>
                     <TableRowHeader>@produto.NumProduto</TableRowHeader>
@@ -49,9 +50,9 @@ else
 
 
 @code {
-    private IList<Produto>? Produtos { get; set; }
+    private IList<Produto>? produtos { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Produtos = await api.GetAsync<Produto>("/api/Produto");
+        produtos = await api.GetAsync<Produto>("/api/Produto");
     }
 }
