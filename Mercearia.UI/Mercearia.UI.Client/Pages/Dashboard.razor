@@ -65,10 +65,11 @@
 
     List<double> BuscarValores()
     {
+        // IList<Venda>? VendasDia = new List<Venda>();
         List<double> valores = new List<double>();
         foreach (var venda in Vendas)
         {
-            valores.Add(Decimal.ToDouble(venda.ValorVenda));
+                valores.Add(Decimal.ToDouble(venda.ValorVenda));
         }
 
         return valores;

@@ -2,6 +2,7 @@
 using Mercearia.Infra.DAO;
 using Mercearia.Model;
 using MySql.Data.MySqlClient;
+using Mysqlx;
 
 namespace Mercearia.Infra.DAOs
 {

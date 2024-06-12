@@ -16,20 +16,21 @@ namespace Mercearia.API.Services
                     p.Quantidade--;
                     if(p.Quantidade == 0)
                         p.Disponivel = false;
-
+                    venda.ValorVenda += p.Preco;
                     produtos.Add(p);
                 }else 
                 {
                     return false;
                 }
             }
-            if(produtos.Count() == venda.Produtos.Count()) {
-                foreach (var produto in produtos)
-                {
-                    new ProdutoDAO().UpdateAsync(produto);
-                }
+            if (produtos.Count() == venda.Produtos.Count()) {
                 new VendaDAO().InsertAsync(venda);
-                return true;
+                
+                    foreach (var produto in produtos)
+                    {
+                        new ProdutoDAO().UpdateAsync(produto);
+                    }
+                    return true;
             }
             return false;
 

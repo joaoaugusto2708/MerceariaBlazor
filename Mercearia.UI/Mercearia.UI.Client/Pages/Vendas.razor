@@ -45,7 +45,7 @@ else
 <Button Color="Color.Primary" Clicked="@ShowModal">Adicionar Produto</Button>
 
 <Modal @ref="modalRef">
-    <ModalContent Centered>
+    <ModalContent Centered Size="ModalSize.Fullscreen">
         <ModalHeader>
             <ModalTitle>Formulário de Venda</ModalTitle>
             <CloseButton Clicked="@HideModal" />
@@ -56,11 +56,14 @@ else
                 <FieldLabel> Primary Classification:</FieldLabel>
 
                 <InputSelect @bind-Value="produtoIdSelecionado">
-                    @foreach (var produto in produtos)
+                    @if (produtos != null)
                     {
-                        <option value="@produto.Id">@produto.Nome</option>
+                        @foreach (var produto in produtos)
+                        {
+                            <option value="@produto.Id">@produto.Nome</option>
 
 
+                        }
                     }
                 
                 </InputSelect>
@@ -75,7 +78,7 @@ else
             </Field>
             <Field>
                 <FieldLabel>Forma de Pagamento:</FieldLabel>
-                <TextEdit @bind-Value="venda.FormaPagamento" />
+                <TextEdit @bind-Text="venda.FormaPagamento" />
             </Field>
 
             <Table Bordered>
@@ -85,6 +88,8 @@ else
                         <TableHeaderCell>Nome Produto</TableHeaderCell>
                         <TableHeaderCell>Desc Produto</TableHeaderCell>
                         <TableHeaderCell>Preço produto</TableHeaderCell>
+                        <TableHeaderCell>Disponivel</TableHeaderCell>
+                        <TableHeaderCell>Quantidade em estoque</TableHeaderCell>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -95,6 +100,8 @@ else
                             <TableRowCell>@prodSelec.Nome</TableRowCell>
                             <TableRowCell>@prodSelec.Descricao</TableRowCell>
                             <TableRowCell>@prodSelec.Preco</TableRowCell>
+                            <TableRowCell>@prodSelec.Disponivel</TableRowCell>
+                            <TableRowCell>@prodSelec.Quantidade</TableRowCell>
                         </TableRow>
 
                     }
@@ -105,7 +112,7 @@ else
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@HideModal">Fechar</Button>
-            <Button Color="Color.Primary" Clicked="@SalvarProduto">Realizar Venda!</Button>
+            <Button Color="Color.Primary" Clicked="@SalvarVenda">Realizar Venda!</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
@@ -118,22 +125,16 @@ else
     private List<Produto> produtosSelecionados = new List<Produto>();
     protected override async Task OnInitializedAsync()
     {
-        vendas = await api.GetAsync<Venda>("/api/Venda");
         produtos = await api.GetAsync<Produto>("/api/Produto");
-
+        vendas = await api.GetAsync<Venda>("/api/Venda");
     }
-
-   
-
     private Modal modalRef;
     private Venda venda = new Venda();
-
     private Task ShowModal()
     {
         venda = new Venda();
         return modalRef.Show();
     }
-
     private async Task HandleValidSubmit()
     {
         try
@@ -157,6 +158,7 @@ else
         if (produto != null && !produtosSelecionados.Contains(produto))
         {
             produtosSelecionados.Add(produto);
+            venda.Produtos = produtosSelecionados;
         }
     }
 
@@ -165,7 +167,7 @@ else
         return modalRef.Hide();
     }
 
-    private async Task SalvarProduto()
+    private async Task SalvarVenda()
     {
         await HandleValidSubmit();
     }

@@ -1,11 +1,14 @@
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using Mercearia.UI.Client.Helpers;
 using Mercearia.UI.Client.Pages;
 using Mercearia.UI.Components;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddScoped(sp => new Api("http://localhost:5285"));
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();

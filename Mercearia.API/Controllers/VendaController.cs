@@ -43,6 +43,8 @@ namespace Mercearia.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Venda>> PostAsync([FromBody] Venda obj)
         {
+            obj.DiaVenda = DateTime.Now;
+            obj.NumVenda = "VEN" + new Random().Next(100000, 999999);
             bool validaVenda = new VendaService().RealizarVenda(obj);
             return validaVenda ? 
                 CreatedAtAction(
