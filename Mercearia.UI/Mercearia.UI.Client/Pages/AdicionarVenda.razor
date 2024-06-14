@@ -1,0 +1,161 @@
+﻿@using Mercearia.UI.Client.Models
+@using Mercearia.UI.Client.Helpers
+@using System.Net.Http
+@using System.Text.Json
+@inject Api api
+
+<Button Color="Color.Primary" Clicked="@ShowModal">Adicionar Produto</Button>
+
+<Modal @ref="modalRef">
+    <ModalContent Centered Size="ModalSize.Fullscreen">
+        <ModalHeader>
+            <ModalTitle>Formulário de Venda</ModalTitle>
+            <CloseButton Clicked="@HideModal" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+
+                <FieldLabel> Primary Classification:</FieldLabel>
+
+                <InputSelect @bind-Value="produtoIdSelecionado">
+                    @if (produtos != null)
+                    {
+                        @foreach (var produto in produtos)
+                        {
+                            <option value="@produto.Id">@produto.Nome</option>
+
+
+                        }
+                    }
+
+                </InputSelect>
+                @if (produtoIdSelecionado != null)
+                {
+                    AdicionarProduto(produtoIdSelecionado);
+                }
+            </Field>
+            <Field>
+                <FieldLabel>Valor da Venda:</FieldLabel>
+                <NumericEdit @bind-Value="venda.ValorVenda" Format="N2" />
+            </Field>
+            <Field>
+                <FieldLabel>Forma de Pagamento:</FieldLabel>
+                <TextEdit @bind-Text="venda.FormaPagamento" />
+            </Field>
+
+            <Table Bordered>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell>#</TableHeaderCell>
+                        <TableHeaderCell>Nome Produto</TableHeaderCell>
+                        <TableHeaderCell>Desc Produto</TableHeaderCell>
+                        <TableHeaderCell>Preço produto</TableHeaderCell>
+                        <TableHeaderCell>Disponivel</TableHeaderCell>
+                        <TableHeaderCell>Quantidade em estoque</TableHeaderCell>
+                        <TableHeaderCell>Excluir Produto</TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @if (produtosSelecionados.Any())
+                    {
+                        @foreach (var prodSelec in produtosSelecionados)
+                        {
+
+                            <TableRow>
+                                <TableRowHeader>@prodSelec.NumProduto</TableRowHeader>
+                                <TableRowCell>@prodSelec.Nome</TableRowCell>
+                                <TableRowCell>@prodSelec.Descricao</TableRowCell>
+                                <TableRowCell>@prodSelec.Preco</TableRowCell>
+                                <TableRowCell>@prodSelec.Disponivel</TableRowCell>
+                                <TableRowCell>@prodSelec.Quantidade</TableRowCell>
+                                <TableRowCell><Button Clicked="@(() => RemoverProduto(prodSelec.Id))">Excluir</Button></TableRowCell>
+                            </TableRow>
+
+                        }
+                    }
+                    else{
+                        <TableRowHeader>Nenhum item selecionado</TableRowHeader>
+                        <TableRowCell>Nenhum item selecionado</TableRowCell>
+                    }
+                  
+
+                </TableBody>
+            </Table>
+
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Fechar</Button>
+            <Button Color="Color.Primary" Clicked="@SalvarVenda">Realizar Venda!</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Inject] NavigationManager navigationManager { get; set; }
+    private string produtoIdSelecionado { get; set; }
+    private IList<Produto>? produtos { get; set; }
+    private List<Produto> produtosSelecionados = new List<Produto>();
+    protected override async Task OnInitializedAsync()
+    {
+        produtos = await api.GetAsync<Produto>("/api/Produto");
+    }
+    private Modal modalRef;
+    private Venda venda = new Venda();
+    private Task ShowModal()
+    {
+        venda = new Venda();
+        return modalRef.Show();
+    }
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var result = await api.PostAsync("/api/Venda", venda);
+            if (result != null)
+            {
+                Console.WriteLine("Venda feita com sucesso!");
+            }
+            await HideModal();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao adicionar o produto: {ex.Message}");
+        }
+    }
+
+    private void AdicionarProduto(string? produtoId)
+    {
+        var produto = produtos.FirstOrDefault(p => p.Id == produtoId);
+        if (produto != null && !produtosSelecionados.Contains(produto))
+        {
+            produtosSelecionados.Add(produto);
+            venda.Produtos = produtosSelecionados;
+        }
+    }
+
+    private void RemoverProduto(string? produtoId)
+    {
+        var produto = produtos.FirstOrDefault(p => p.Id == produtoId);
+        if (produto != null)
+        {
+            produtosSelecionados.Remove(produto);
+
+        }
+        StateHasChanged();
+    }
+
+
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+
+    private async Task SalvarVenda()
+    {
+        await HandleValidSubmit();
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+        StateHasChanged();
+
+    }
+}

@@ -9,6 +9,7 @@ namespace Mercearia.API.Services
         public bool RealizarVenda(Venda venda) 
         {
             List<Produto> produtos = new List<Produto>();
+            venda.ValorVenda = 0;
             foreach (var p in venda.Produtos)
             {
                 if(p.Disponivel && p.Quantidade != 0) 

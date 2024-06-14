@@ -1,0 +1,49 @@
+﻿@using Mercearia.UI.Client.Models
+@using Mercearia.UI.Client.Helpers
+@using System.Net.Http
+@using System.Text.Json
+@inject Api api
+<Button Color="Color.Primary" Clicked="@ShowModal">Show Modal</Button>
+
+<Modal @ref="modalRef">
+    <ModalContent Size="ModalSize.Fullscreen">
+        <ModalHeader>
+            <ModalTitle>Employee edit</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>Name</FieldLabel>
+                <TextEdit Placeholder="Enter name..." />
+            </Field>
+            <Field>
+                <FieldLabel>Surname</FieldLabel>
+                <TextEdit Placeholder="Enter surname..." />
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="@HideModal">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+@code {
+  
+    private IList<Venda>? vendas { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        vendas = await api.GetAsync<Venda>("/api/Venda");
+    }
+
+    private Modal modalRef;
+
+    private Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+}
