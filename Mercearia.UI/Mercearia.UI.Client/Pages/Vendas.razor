@@ -24,6 +24,8 @@ else
                 <TableHeaderCell>Valor da Venda</TableHeaderCell>
                 <TableHeaderCell>Produtos da venda</TableHeaderCell>
                 <TableHeaderCell>Excluir Venda</TableHeaderCell>
+                <TableHeaderCell>Ver Detalhes</TableHeaderCell>
+
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -35,6 +37,7 @@ else
                     <TableRowCell>@venda.ValorVenda</TableRowCell>
                     <TableRowCell>@venda.Produtos.Count()</TableRowCell>
                     <TableRowCell> <Button Color="Color.Danger" Clicked="() => ExcluirVenda(venda.Id)">Excluir</Button></TableRowCell>
+                    <TableRowCell><VerIndividualVenda vendaSelec = "@venda.Id"/></TableRowCell>
                 </TableRow>
             }
 
@@ -48,11 +51,13 @@ else
 
 
 @code {
+
     private IList<Venda>? vendas { get; set; }
     protected override async Task OnInitializedAsync()
     {
         vendas = await api.GetAsync<Venda>("/api/Venda");
     }
+
     
 
     private async Task ExcluirVenda(string vendaId)

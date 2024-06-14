@@ -3,37 +3,40 @@
 @using System.Net.Http
 @using System.Text.Json
 @inject Api api
-<Button Color="Color.Primary" Clicked="@ShowModal">Show Modal</Button>
+<Button Color="Color.Primary" Clicked="@ShowModal">Ver Venda Detalhada</Button>
 
 <Modal @ref="modalRef">
-    <ModalContent Size="ModalSize.Fullscreen">
+    <ModalContent Centered>
         <ModalHeader>
-            <ModalTitle>Employee edit</ModalTitle>
+            <ModalTitle>Venda Detalhada</ModalTitle>
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <Field>
-                <FieldLabel>Name</FieldLabel>
-                <TextEdit Placeholder="Enter name..." />
-            </Field>
-            <Field>
-                <FieldLabel>Surname</FieldLabel>
-                <TextEdit Placeholder="Enter surname..." />
-            </Field>
+            <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="selectedItem">
+                <ListGroupItem Name="first">@venda.NumVenda</ListGroupItem>
+                <ListGroupItem Name="second">@venda.FormaPagamento</ListGroupItem>
+                <ListGroupItem Name="third">@venda.DiaVenda</ListGroupItem>
+                <ListGroupItem Name="fourth">@venda.ValorVenda</ListGroupItem>
+
+            </ListGroup>
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-            <Button Color="Color.Primary" Clicked="@HideModal">Save Changes</Button>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Fechar</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
+
 @code {
-  
-    private IList<Venda>? vendas { get; set; }
+    [Parameter]
+    public string vendaSelec { get; set; }
+    private Venda venda { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        vendas = await api.GetAsync<Venda>("/api/Venda");
+        venda = await api.GetIdAsync<Venda>("/api/Venda", vendaSelec);
     }
+
+    private string selectedItem = "first";
 
     private Modal modalRef;
 
