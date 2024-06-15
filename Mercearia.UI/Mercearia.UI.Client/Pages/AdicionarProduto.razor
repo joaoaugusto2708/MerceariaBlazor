@@ -51,6 +51,7 @@
                         
                     </Field>
                 </Validation>
+            </Validations>
                     <Field>
                         <FieldLabel>Preço</FieldLabel>
                         <InputNumber TValue="decimal" @bind-Value="produto.Preco" Step="0.01" />
@@ -72,7 +73,6 @@
                         <FieldLabel>Validade</FieldLabel>
                         <InputDate TValue="DateTime" @bind-Value="produto.Validade" />
                     </Field>
-            </Validations>
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
