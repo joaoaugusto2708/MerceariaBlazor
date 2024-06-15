@@ -6,6 +6,24 @@
 @inject Api api
 <PageTitle>Lista de Vendas</PageTitle>
 
+
+<style>
+    .text-center {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 40px; 
+    }
+
+    .paraf {
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+</style>
+
+<h1 class="text-center">Relatório de Vendas</h1>
+
+<p class="paraf">Bem-vindo ao seu espaço para gerenciamento de vendas! Aqui você pode visualizar e gerenciar todas as vendas realizadas.</p>
+
 <AdicionarVenda/>
 @if (vendas == null)
 {
@@ -19,7 +37,7 @@ else
     <Table>
         <TableHeader>
             <TableRow>
-                <TableHeaderCell>#</TableHeaderCell>
+                <TableHeaderCell>ID Venda</TableHeaderCell>
                 <TableHeaderCell>Forma de Pagamento</TableHeaderCell>
                 <TableHeaderCell>Valor da Venda</TableHeaderCell>
                 <TableHeaderCell>Produtos da venda</TableHeaderCell>
@@ -38,7 +56,7 @@ else
                     <TableRowCell>@venda.FormaPagamento</TableRowCell>
                     <TableRowCell>@venda.ValorVenda</TableRowCell>
                     <TableRowCell>@venda.Produtos.Count()</TableRowCell>
-                    <TableRowCell> <Button Color="Color.Danger" Clicked="() => ExcluirVenda(venda.Id)">Excluir</Button></TableRowCell>
+                    <TableRowCell> <Button Color="Color.Danger" Clicked="() => ExcluirVenda(venda.Id)"><Blazorise.Icon Name="FontAwesomeIcons.Trash" /></Button></TableRowCell>
                     <TableRowCell><VerIndividualVenda vendaSelec = "@venda.Id"/></TableRowCell>
                     <TableRowCell><AlterarVenda vendaId ="@venda.Id" /></TableRowCell>
                     <TableRowCell><VerProdutos vendaIdProduto ="@venda.Id" /></TableRowCell>
