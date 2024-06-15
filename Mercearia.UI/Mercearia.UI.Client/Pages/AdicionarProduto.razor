@@ -82,6 +82,7 @@
 </Modal>
 
 @code {
+    [Inject] NavigationManager navigationManager { get; set; }
     private Modal modalRef;
     private Produto produto = new Produto();
 
@@ -119,5 +120,7 @@
     private async Task SubmitForm()
     {
         await HandleValidSubmit();
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+        StateHasChanged();
     }
 }

@@ -71,6 +71,7 @@ else
 
 
 @code {
+    [Inject] NavigationManager navigationManager { get; set; }
     private Modal modalRef;
 
     [Parameter]
@@ -121,6 +122,8 @@ else
     private async Task SubmitForm()
     {
         await HandleValidSubmit();
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+        StateHasChanged();
     }
 }
 

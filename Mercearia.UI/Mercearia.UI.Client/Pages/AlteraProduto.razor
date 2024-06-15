@@ -61,6 +61,7 @@
 </Modal>
 
 @code {
+    [Inject] NavigationManager navigationManager { get; set; }
     [Parameter]
     public string produtoId { get; set; }
     private Produto produto { get; set; }
@@ -87,9 +88,9 @@
     {
         try
         {
-         await api.PutAsync("/api/Produto", produto.Id, produto );
+            await api.PutAsync("/api/Produto", produto.Id, produto );
          
-                Console.WriteLine("Produto Alterado com sucesso!");
+            Console.WriteLine("Produto Alterado com sucesso!");
             await HideModal();
         }
         catch (Exception ex)
@@ -100,6 +101,9 @@
 
     private async Task SubmitForm()
     {
+
         await HandleValidSubmit();
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+        StateHasChanged();
     }
 }

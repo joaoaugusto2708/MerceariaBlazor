@@ -14,10 +14,10 @@
         <ModalBody>
             @if(venda!=null){
                 <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="selectedItem">
-                    <ListGroupItem Name="first">@venda.NumVenda</ListGroupItem>
-                    <ListGroupItem Name="second">@venda.FormaPagamento</ListGroupItem>
-                    <ListGroupItem Name="third">@venda.DiaVenda</ListGroupItem>
-                    <ListGroupItem Name="fourth">@venda.ValorVenda</ListGroupItem>
+                    <ListGroupItem Name="first">Numero do Produto: @venda.NumVenda</ListGroupItem>
+                    <ListGroupItem Name="second">Forma de Pagamento: @venda.FormaPagamento</ListGroupItem>
+                    <ListGroupItem Name="third">Dia da Venda: @venda.DiaVenda</ListGroupItem>
+                    <ListGroupItem Name="fourth">Valor da Venda: @venda.ValorVenda</ListGroupItem>
                 </ListGroup>
             }
 
