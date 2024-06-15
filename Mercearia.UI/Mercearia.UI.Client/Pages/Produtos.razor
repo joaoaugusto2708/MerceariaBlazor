@@ -6,10 +6,21 @@
 @inject Api api
 <PageTitle>Lista de Produtos</PageTitle>
 
-<h1>Produtos</h1>
+<style>
+    .text-center {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 40px
+    }
+    .paraf{
+        margin-bottom: 40px;
+    }
+</style>
 
-<p>Olá usuário!</p>
-<p>Esse é seu espaço para adicionar e modificar seus produtos.</p>
+<h1 class="text-center">Produtos</h1>
+
+<p class="paraf">Bem-vindo ao seu espaço para gerenciamento de produtos! Aqui você pode adicionar novos produtos, bem como modificar ou excluir os já existentes.</p>
+
 
 
 @if (produtos == null)
