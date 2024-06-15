@@ -6,6 +6,11 @@
 @inject Api api
 <PageTitle>Lista de Produtos</PageTitle>
 
+<h1>Produtos</h1>
+
+<p>Olá usuário!</p>
+<p>Esse é seu espaço para adicionar e modificar seus produtos.</p>
+
 
 @if (produtos == null)
 {
@@ -20,7 +25,7 @@ else
     <Table>
         <TableHeader>
             <TableRow>
-                <TableHeaderCell>#</TableHeaderCell>
+                <TableHeaderCell>ID</TableHeaderCell>
                 <TableHeaderCell>Nome</TableHeaderCell>
                 <TableHeaderCell>Preço</TableHeaderCell>
                 <TableHeaderCell>Quantidade</TableHeaderCell>
