@@ -51,19 +51,15 @@
                         
                     </Field>
                 </Validation>
-                <Validation>
+            </Validations>
                     <Field>
                         <FieldLabel>Preço</FieldLabel>
                         <InputNumber TValue="decimal" @bind-Value="produto.Preco" Step="0.01" />
                     </Field>
-                </Validation>
-                <Validation>
                     <Field>
                         <FieldLabel>Quantidade</FieldLabel>
                         <InputNumber TValue="int" @bind-Value="produto.Quantidade" />
                     </Field>
-                </Validation>
-                <Validation>
                     <Field>
                         <FieldLabel>Disponível</FieldLabel>
                         <div>
@@ -73,14 +69,10 @@
                             </InputRadioGroup>
                         </div>
                     </Field>
-                </Validation>
-                <Validation>
                     <Field>
                         <FieldLabel>Validade</FieldLabel>
                         <InputDate TValue="DateTime" @bind-Value="produto.Validade" />
                     </Field>
-                </Validation>
-            </Validations>
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
