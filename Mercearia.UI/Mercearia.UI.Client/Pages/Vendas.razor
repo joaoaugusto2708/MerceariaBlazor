@@ -25,6 +25,7 @@ else
                 <TableHeaderCell>Produtos da venda</TableHeaderCell>
                 <TableHeaderCell>Excluir Venda</TableHeaderCell>
                 <TableHeaderCell>Ver Detalhes</TableHeaderCell>
+                <TableHeaderCell>Editar Venda</TableHeaderCell>
 
             </TableRow>
         </TableHeader>
@@ -38,6 +39,8 @@ else
                     <TableRowCell>@venda.Produtos.Count()</TableRowCell>
                     <TableRowCell> <Button Color="Color.Danger" Clicked="() => ExcluirVenda(venda.Id)">Excluir</Button></TableRowCell>
                     <TableRowCell><VerIndividualVenda vendaSelec = "@venda.Id"/></TableRowCell>
+                    <TableRowCell><AlterarVenda vendaId ="@venda.Id" /></TableRowCell>
+
                 </TableRow>
             }
 

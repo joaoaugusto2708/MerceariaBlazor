@@ -16,7 +16,7 @@ namespace Mercearia.Infra.DAO
     {
         public abstract string NomeTabela { get; }
         public abstract Mapa[] Mapas { get; }
-        protected static string GetStringConnection() => "Server=localhost;Port=3306;Database=Mercearia;User=root;Password=aluno;";
+        protected static string GetStringConnection() => "Server=localhost;Port=3306;Database=Mercearia;User=root;Password=root;";
 
         public async Task InsertAsync(T obj)
         {

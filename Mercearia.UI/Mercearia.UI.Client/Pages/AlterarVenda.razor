@@ -1,0 +1,73 @@
+﻿@using Mercearia.UI.Client.Models
+@using Mercearia.UI.Client.Helpers
+@using System.Net.Http
+@using System.Text.Json
+@inject Api api
+<Button Color="Color.Secondary" Clicked="@ShowModal">Alterar Venda</Button>
+
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Form Venda </ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>Valor da venda</FieldLabel>
+                <InputNumber TValue="decimal" @bind-Value="venda.ValorVenda" />
+            </Field>
+            <Field>
+                <FieldLabel>Tipo de pagamento</FieldLabel>
+                <TextEdit @bind-Text="venda.FormaPagamento" />
+            </Field>
+           
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Fechar</Button>
+            <Button Color="Color.Primary" Clicked="@SubmitForm">Salvar Alteraçoes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public string vendaId { get; set; }
+    private Venda venda { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        venda = await api.GetIdAsync<Venda>("/api/Venda", vendaId);
+    }
+
+    private Modal modalRef;
+
+
+    private Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await api.PutAsync("/api/Venda", venda.Id, venda);
+
+            Console.WriteLine("Venda Alterada com sucesso!");
+            await HideModal();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao Alterar a Venda: {ex.Message}");
+        }
+    }
+
+    private async Task SubmitForm()
+    {
+        await HandleValidSubmit();
+    }
+}
