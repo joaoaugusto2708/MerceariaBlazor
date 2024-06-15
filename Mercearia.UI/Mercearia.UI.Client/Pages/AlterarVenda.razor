@@ -3,7 +3,7 @@
 @using System.Net.Http
 @using System.Text.Json
 @inject Api api
-<Button Color="Color.Secondary" Clicked="@ShowModal">Alterar Venda</Button>
+<Button Color="Color.Secondary" Clicked="@ShowModal"><Blazorise.Icon Name="FontAwesomeIcons.PencilAlt"/></Button>
 
 <Modal @ref="modalRef">
     <ModalContent Centered>
@@ -12,14 +12,21 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <Field>
-                <FieldLabel>Valor da venda</FieldLabel>
-                <InputNumber TValue="decimal" @bind-Value="venda.ValorVenda" />
-            </Field>
-            <Field>
-                <FieldLabel>Tipo de pagamento</FieldLabel>
-                <TextEdit @bind-Text="venda.FormaPagamento" />
-            </Field>
+            @if (venda != null)
+            {
+                <Field>
+                    <FieldLabel>Valor da venda</FieldLabel>
+                    <InputNumber TValue="decimal" @bind-Value="venda.ValorVenda" />
+                </Field>
+                <Field>
+                    <FieldLabel>Tipo de pagamento</FieldLabel>
+                    <TextEdit @bind-Text="venda.FormaPagamento" />
+                </Field>
+            }
+            else
+            {
+                <p>Carregando Venda...</p>
+            }
            
         </ModalBody>
         <ModalFooter>
@@ -30,11 +37,13 @@
 </Modal>
 
 @code {
+    [Inject] NavigationManager navigationManager { get; set; }
     [Parameter]
     public string vendaId { get; set; }
     private Venda venda { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        venda = new Venda();
         venda = await api.GetIdAsync<Venda>("/api/Venda", vendaId);
     }
 
@@ -68,6 +77,8 @@
 
     private async Task SubmitForm()
     {
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+        StateHasChanged();
         await HandleValidSubmit();
     }
 }

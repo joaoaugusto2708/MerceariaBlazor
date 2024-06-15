@@ -44,7 +44,7 @@ else
                     <TableRowCell>@produto.Validade</TableRowCell>
                     <TableRowCell>@produto.Descricao</TableRowCell>
                     <TableRowCell><AlteraProduto produtoId="@produto.Id"/></TableRowCell>
-                    <TableRowCell> <Button Color="Color.Danger" Clicked="() => ExcluirProduto(produto.Id)">Excluir</Button></TableRowCell>
+                    <TableRowCell> <Button Color="Color.Danger" Clicked="() => ExcluirProduto(produto.Id)"><Blazorise.Icon Name="FontAwesomeIcons.Trash" /></Button></TableRowCell>
                     
                 </TableRow>
             }

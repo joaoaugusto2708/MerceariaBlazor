@@ -12,40 +12,46 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <Field>
-                <FieldLabel>Nome do Produto</FieldLabel>
-                <TextEdit @bind-Text="produto.Nome" />
-            </Field>
-            <Field>
-                <FieldLabel>Descrição do Produto</FieldLabel>
-                <TextEdit @bind-Text="produto.Descricao" />
-            </Field>
-            <Field>
-                <FieldLabel>Tipo do Produto</FieldLabel>
-                <TextEdit @bind-Text="produto.TipoProduto" />
-            </Field>
-            <Field>
-                <FieldLabel>Preço</FieldLabel>
-                <InputNumber TValue="decimal" @bind-Value="produto.Preco" Step="0.01" />
-            </Field>
-            <Field>
-                <FieldLabel>Quantidade</FieldLabel>
-                <InputNumber TValue="int" @bind-Value="produto.Quantidade" />
-            </Field>
-            <Field>
-                <FieldLabel>Disponível</FieldLabel>
-                <div>
-                    <InputRadioGroup TValue="bool" @bind-Value="produto.Disponivel">
-                        <InputRadio TValue="bool" Value="true" /> Sim
-                        <InputRadio TValue="bool" Value="false" /> Não
-                    </InputRadioGroup>
-                </div>
-            </Field>
-            <Field>
-                <FieldLabel>Validade</FieldLabel>
-                <InputDate TValue="DateTime" @bind-Value="produto.Validade" />
-            </Field>
-
+            @if (produto != null)
+            {
+                <Field>
+                    <FieldLabel>Nome do Produto</FieldLabel>
+                    <TextEdit @bind-Text="produto.Nome" />
+                </Field>
+                <Field>
+                    <FieldLabel>Descrição do Produto</FieldLabel>
+                    <TextEdit @bind-Text="produto.Descricao" />
+                </Field>
+                <Field>
+                    <FieldLabel>Tipo do Produto</FieldLabel>
+                    <TextEdit @bind-Text="produto.TipoProduto" />
+                </Field>
+                <Field>
+                    <FieldLabel>Preço</FieldLabel>
+                    <InputNumber TValue="decimal" @bind-Value="produto.Preco" Step="0.01" />
+                </Field>
+                <Field>
+                    <FieldLabel>Quantidade</FieldLabel>
+                    <InputNumber TValue="int" @bind-Value="produto.Quantidade" />
+                </Field>
+                <Field>
+                    <FieldLabel>Disponível</FieldLabel>
+                    <div>
+                        <InputRadioGroup TValue="bool" @bind-Value="produto.Disponivel">
+                            <InputRadio TValue="bool" Value="true" /> Sim
+                            <InputRadio TValue="bool" Value="false" /> Não
+                        </InputRadioGroup>
+                    </div>
+                </Field>
+                <Field>
+                    <FieldLabel>Validade</FieldLabel>
+                    <InputDate TValue="DateTime" @bind-Value="produto.Validade" />
+                </Field>
+            }
+            else
+            {
+                <p>Carregando produto...</p>
+            }
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
@@ -60,6 +66,7 @@
     private Produto produto { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        produto = new Produto();
         produto = await api.GetIdAsync<Produto>("/api/Produto", produtoId);
     }
     
