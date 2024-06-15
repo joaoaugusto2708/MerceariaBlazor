@@ -12,13 +12,21 @@
             <CloseButton />
         </ModalHeader>
         <ModalBody>
-            <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="selectedItem">
-                <ListGroupItem Name="first">@venda.NumVenda</ListGroupItem>
-                <ListGroupItem Name="second">@venda.FormaPagamento</ListGroupItem>
-                <ListGroupItem Name="third">@venda.DiaVenda</ListGroupItem>
-                <ListGroupItem Name="fourth">@venda.ValorVenda</ListGroupItem>
+            @if(venda!=null){
+                <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="selectedItem">
+                    <ListGroupItem Name="first">@venda.NumVenda</ListGroupItem>
+                    <ListGroupItem Name="second">@venda.FormaPagamento</ListGroupItem>
+                    <ListGroupItem Name="third">@venda.DiaVenda</ListGroupItem>
+                    <ListGroupItem Name="fourth">@venda.ValorVenda</ListGroupItem>
+                </ListGroup>
+            }
 
-            </ListGroup>
+            else
+            {
+                <h1>Nenhuma venda encontra</h1>;
+            }
+
+            
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@HideModal">Fechar</Button>
@@ -33,7 +41,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        venda = await api.GetIdAsync<Venda>("/api/Venda", vendaSelec);
+        if (vendaSelec!= null)
+        {
+            venda = await api.GetIdAsync<Venda>("/api/Venda", vendaSelec);
+        }
     }
 
     private string selectedItem = "first";

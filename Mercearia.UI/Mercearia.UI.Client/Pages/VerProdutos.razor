@@ -1,0 +1,127 @@
+﻿
+@using Mercearia.UI.Client.Models
+@using Mercearia.UI.Client.Helpers
+@using System.Net.Http
+@using System.Text.Json
+@inject Api api
+
+<Button Color="Color.Primary" Clicked="@ShowModal">Ver Produtos</Button>
+
+<Modal @ref="modalRef">
+    <ModalContent Centered Size="ModalSize.Fullscreen">
+
+        <ModalHeader>
+            <ModalTitle>Formulario </ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            
+            @if (venda == null)
+{
+    <div class="d-flex justify-content-center">
+        <strong role="status">Loading...</strong>
+        <Spinner Type="SpinnerType.Border" Class="ms-auto" />
+    </div>
+}
+else
+{
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>#</TableHeaderCell>
+                <TableHeaderCell>Nome</TableHeaderCell>
+                <TableHeaderCell>Preço</TableHeaderCell>
+                <TableHeaderCell>Quantidade</TableHeaderCell>
+                <TableHeaderCell>Disponivel</TableHeaderCell>
+                <TableHeaderCell>Tipo de Produto</TableHeaderCell>
+                <TableHeaderCell>Validade</TableHeaderCell>
+                <TableHeaderCell>Descrição</TableHeaderCell>
+                <TableHeaderCell>Ações</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach(var produto in venda.Produtos)
+            {
+                <TableRow>
+                    <TableRowHeader>@produto.NumProduto</TableRowHeader>
+                    <TableRowCell>@produto.Nome</TableRowCell>
+                    <TableRowCell>@produto.Preco</TableRowCell>
+                    <TableRowCell>@produto.Quantidade</TableRowCell>
+                    <TableRowCell>@produto.Disponivel</TableRowCell>
+                    <TableRowCell>@produto.TipoProduto</TableRowCell>
+                    <TableRowCell>@produto.Validade</TableRowCell>
+                    <TableRowCell>@produto.Descricao</TableRowCell>
+                    <TableRowCell><AlteraProduto produtoId="@produto.Id"/></TableRowCell>
+                    <TableRowCell> <Button Color="Color.Danger" Clicked="() => ExcluirProdutoVenda(produto.Id)">Excluir</Button></TableRowCell>           
+                </TableRow>
+            }
+
+        </TableBody>
+    </Table>
+}
+
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="@SubmitForm">Save Changes</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+
+
+@code {
+    private Modal modalRef;
+
+    [Parameter]
+    public string vendaIdProduto { get; set; }
+
+    private Venda? venda { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        venda = await api.GetIdAsync<Venda>("/api/Venda", vendaIdProduto);
+    }
+
+    private Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+
+    private void ExcluirProdutoVenda(string? produtoId)
+    {
+        var produto = venda.Produtos.FirstOrDefault(p => p.Id == produtoId);
+        if (produto != null)
+        {
+            venda.Produtos.Remove(produto);
+
+        }
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await api.PutAsync("/api/Venda", venda.Id, venda);
+
+            Console.WriteLine("Venda alterada com sucesso!");
+            await HideModal();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao alterar a venda: {ex.Message}");
+        }
+    }
+
+    private async Task SubmitForm()
+    {
+        await HandleValidSubmit();
+    }
+}
+
+
