@@ -71,11 +71,11 @@ else
 
 
 @code {
-    [Inject] NavigationManager navigationManager { get; set; }
-    private Modal modalRef;
+    [Inject] NavigationManager? navigationManager { get; set; }
+    private Modal? modalRef;
 
     [Parameter]
-    public string vendaIdProduto { get; set; }
+    public string? vendaIdProduto { get; set; }
 
     private Venda? venda { get; set; }
     protected override async Task OnInitializedAsync()

@@ -24,6 +24,10 @@
 
 <p class="paraf">Bem-vindo ao seu espaço para gerenciamento de vendas! Aqui você pode visualizar e gerenciar todas as vendas realizadas.</p>
 
+<div class="mb-3">
+    <InputText @bind-Value="searchTerm" Placeholder="Pesquisar por ID da venda ou forma de pagamento" class="form-control" @oninput="SearchVendas" />
+</div>
+
 <AdicionarVenda/>
 @if (vendas == null)
 {
@@ -45,11 +49,10 @@ else
                 <TableHeaderCell>Ver Detalhes</TableHeaderCell>
                 <TableHeaderCell>Editar Venda</TableHeaderCell>
                 <TableHeaderCell>Ver Produtos</TableHeaderCell>
-
             </TableRow>
         </TableHeader>
         <TableBody>
-            @foreach (var venda in vendas)
+            @foreach (var venda in filteredVendas)
             {
                 <TableRow>
                     <TableRowHeader>@venda.NumVenda</TableRowHeader>
@@ -60,28 +63,22 @@ else
                     <TableRowCell><VerIndividualVenda vendaSelec = "@venda.Id"/></TableRowCell>
                     <TableRowCell><AlterarVenda vendaId ="@venda.Id" /></TableRowCell>
                     <TableRowCell><VerProdutos vendaIdProduto ="@venda.Id" /></TableRowCell>
-
                 </TableRow>
             }
-
         </TableBody>
     </Table>
 }
 
-
-
-
-
-
 @code {
-
     private IList<Venda>? vendas { get; set; }
+    private IList<Venda>? filteredVendas { get; set; }
+    private string searchTerm { get; set; } = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         vendas = await api.GetAsync<Venda>("/api/Venda");
+        filteredVendas = vendas;
     }
-
-    
 
     private async Task ExcluirVenda(string vendaId)
     {
@@ -89,13 +86,32 @@ else
         {
             await api.DeleteAsync("/api/Venda", vendaId);
             vendas = await api.GetAsync<Venda>("/api/Venda");
+            FilterVendas();
             StateHasChanged();
-          
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao adicionar o produto: {ex.Message}");
+            Console.WriteLine($"Erro ao excluir a venda: {ex.Message}");
         }
     }
-   
+
+    private void SearchVendas(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        FilterVendas();
+    }
+
+    private void FilterVendas()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filteredVendas = vendas;
+        }
+        else
+        {
+            filteredVendas = vendas?.Where(v =>
+                v.NumVenda.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                v.FormaPagamento.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
 }

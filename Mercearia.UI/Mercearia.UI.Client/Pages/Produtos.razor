@@ -86,7 +86,7 @@ else
         {
             await api.DeleteAsync("/api/Produto", produtoId);
             produtos = await api.GetAsync<Produto>("/api/Produto");
-            FilterProducts(); // Atualiza a lista filtrada após exclusão
+            FilterProducts();
             StateHasChanged();
         }
         catch (Exception ex)
