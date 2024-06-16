@@ -21,7 +21,9 @@
 
 <p class="paraf">Bem-vindo ao seu espaço para gerenciamento de produtos! Aqui você pode adicionar novos produtos, bem como modificar ou excluir os já existentes.</p>
 
-
+<div class="mb-3">
+    <InputText @bind-Value="searchTerm" Placeholder="Pesquisar por nome ou número do produto" class="form-control" @oninput="SearchProducts" />
+</div>
 
 @if (produtos == null)
 {
@@ -48,7 +50,7 @@ else
             </TableRow>
         </TableHeader>
         <TableBody>
-            @foreach(var produto in produtos)
+            @foreach(var produto in filteredProdutos)
             {
                 <TableRow>
                     <TableRowHeader>@produto.NumProduto</TableRowHeader>
@@ -60,21 +62,22 @@ else
                     <TableRowCell>@produto.Validade</TableRowCell>
                     <TableRowCell>@produto.Descricao</TableRowCell>
                     <TableRowCell><AlteraProduto produtoId="@produto.Id"/></TableRowCell>
-                    <TableRowCell> <Button Color="Color.Danger" Clicked="() => ExcluirProduto(produto.Id)"><Blazorise.Icon Name="FontAwesomeIcons.Trash" /></Button></TableRowCell>
-                    
+                    <TableRowCell><Button Color="Color.Danger" Clicked="() => ExcluirProduto(produto.Id)"><Blazorise.Icon Name="FontAwesomeIcons.Trash" /></Button></TableRowCell>
                 </TableRow>
             }
-
         </TableBody>
     </Table>
 }
 
-
 @code {
     private IList<Produto>? produtos { get; set; }
+    private IList<Produto>? filteredProdutos { get; set; }
+    private string searchTerm { get; set; } = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         produtos = await api.GetAsync<Produto>("/api/Produto");
+        filteredProdutos = produtos;
     }
     
     private async Task ExcluirProduto(string produtoId)
@@ -83,12 +86,32 @@ else
         {
             await api.DeleteAsync("/api/Produto", produtoId);
             produtos = await api.GetAsync<Produto>("/api/Produto");
+            FilterProducts(); // Atualiza a lista filtrada após exclusão
             StateHasChanged();
-          
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Erro ao Excluir o produto: {ex.Message}");
+        }
+    }
+
+    private void SearchProducts(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        FilterProducts();
+    }
+
+    private void FilterProducts()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filteredProdutos = produtos;
+        }
+        else
+        {
+            filteredProdutos = produtos?.Where(p => 
+                p.Nome.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || 
+                p.NumProduto.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
 }
